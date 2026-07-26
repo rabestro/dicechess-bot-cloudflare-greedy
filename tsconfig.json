@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["es2022"],
+    "types": ["@cloudflare/workers-types"],
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true
+  },
+  "include": ["src"],
+  "//": "Test files run via `node --test` (type-stripped), not tsc — they live in the Node globals world, which clashes with Workers globals. tsc only checks the deployable Worker.",
+  "exclude": ["node_modules", "src/**/*.test.ts"]
+}

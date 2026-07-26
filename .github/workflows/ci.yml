@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# packages: read — resolves @rabestro/dicechess-engine from GitHub Packages with the default
+# token (the .npmrc reads it as NODE_AUTH_TOKEN), same pattern as the sibling bot repos.
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  test:
+    name: Typecheck & test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "26"
+
+      - name: Install
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test

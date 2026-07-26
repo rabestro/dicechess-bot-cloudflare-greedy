@@ -1,0 +1,12 @@
+# The webhook endpoint is https://<name>.<your-subdomain>.workers.dev/ — HTTPS and public,
+# which is all the DiceChess webhook registration requires. No custom domain needed.
+#
+# The signing secret is NOT stored here — set it after deploy with:
+#   wrangler secret put DICECHESS_WEBHOOK_SECRET
+name = "dicechess-bot-cloudflare-greedy"
+main = "src/index.ts"
+compatibility_date = "2025-11-01"
+
+# The engine is a plain Scala.js ES bundle (no Node built-ins, no DOM) and WebCrypto is a
+# Workers global, so no nodejs_compat flag is needed. If a future engine build pulls in a
+# Node built-in, add: compatibility_flags = ["nodejs_compat"]
