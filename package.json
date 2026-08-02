@@ -11,7 +11,7 @@
     "test": "node --test src/webhook.test.ts src/strategy.test.ts"
   },
   "dependencies": {
-    "@rabestro/dicechess-engine": "1.10.5"
+    "@rabestro/dicechess-engine": "1.11.3"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260729.1",
