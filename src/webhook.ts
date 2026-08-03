@@ -3,7 +3,7 @@
 // contract every DiceChess starter does:
 //   - HMAC-SHA256(secret, "<timestamp>.<raw body>") hex in X-DiceChess-Signature, ±5 min window
 //   - {"type":"verification","nonce":…} → echo the nonce (the ownership handshake)
-//   - {"type":"yourTurn","state":{"dfen":…}} → {"moves":[…]} (the HTTP response body IS the move)
+//   - {"type":"turn","dfen":…} → {"moves":[…]} (the HTTP response body IS the move)
 
 export const TIMESTAMP_HEADER = 'x-dicechess-timestamp';
 export const SIGNATURE_HEADER = 'x-dicechess-signature';
@@ -66,7 +66,7 @@ export async function handleDelivery(
   chooseMoves: (dfen: string) => string[] | Promise<string[]>,
   now: number,
 ): Promise<Delivery> {
-  let envelope: { type?: string; nonce?: string; state?: { dfen?: string } };
+  let envelope: { type?: string; nonce?: string; dfen?: string; state?: { dfen?: string } };
   try {
     envelope = JSON.parse(rawBody);
   } catch {
@@ -79,7 +79,7 @@ export async function handleDelivery(
   if (envelope.type === 'verification') {
     return { status: 200, body: { nonce: envelope.nonce ?? '' } };
   }
-  if (envelope.type !== 'yourTurn') {
+  if (envelope.type !== 'turn' && envelope.type !== 'yourTurn') {
     return { status: 400, body: { error: `unrecognized "type": ${envelope.type}` } };
   }
 
@@ -88,9 +88,9 @@ export async function handleDelivery(
     return { status: 401, body: { error: 'invalid or expired signature' } };
   }
 
-  const dfen = envelope.state?.dfen;
+  const dfen = envelope.dfen ?? envelope.state?.dfen;
   if (typeof dfen !== 'string') {
-    return { status: 400, body: { error: 'missing state.dfen' } };
+    return { status: 400, body: { error: 'missing dfen' } };
   }
 
   try {
